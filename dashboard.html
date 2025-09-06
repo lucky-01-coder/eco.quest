@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>EcoQuest – Dashboard</title>
+<link rel="stylesheet" href="./styles.css"/>
+</head><body data-page="dashboard">
+<header class="header"><div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:16px">
+  <a class="brand" href="index.html"><span class="logo">🌿</span>EcoQuest</a>
+  <nav class="nav" data-nav>
+    <a href="/play.html">Play</a>
+    <a href="/impact.html">Impact</a>
+    <a href="/learn.html">Learn</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/index.html">Home</a>
+  </nav>
+</div></header>
+<main>
+  <section class="section"><div class="container">
+    <span class="badge">🏆 Educator Sandbox</span>
+    <h1 class="h1">Dashboard (Static)</h1>
+    <p class="lead">Manage eco‑points, award badges, and track competitions.</p>
+
+    <div class="row grid-3" style="margin-top:16px">
+      <div class="card"><div class="small">Teams</div><div id="teams-count" style="font-weight:800;font-size:22px">0</div></div>
+      <div class="card"><div class="small">Badges</div><div id="badges-count" style="font-weight:800;font-size:22px">0</div></div>
+      <div class="card"><div class="small">Top Team</div><div id="top-team" style="font-weight:700">—</div></div>
+    </div>
+
+    <div class="row grid-2" style="margin-top:16px">
+      <div class="card">
+        <div class="small">Admin Actions</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+          <select id="team-select" class="select"><option value="">Select team</option></select>
+          <select id="badge-select" class="select"><option value="">Select badge</option></select>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button id="add10" class="btn">+10 points</button>
+          <button id="add50" class="btn">+50</button>
+          <button id="awardBadge" class="btn primary">🎖 Award badge</button>
+        </div>
+      </div>
+      <div class="card" style="overflow:auto">
+        <table class="table">
+          <thead><tr><th>Rank</th><th>Team</th><th>Badges</th><th style="text-align:right">Points</th></tr></thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div></section>
+</main>
+<footer class="footer"><div class="container">© EcoQuest</div></footer>
+<script src="./app.js"></script>
+</body></html>

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>EcoQuest – Play (Games & Quizzes)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{--bg:#0c0d0c;--fg:#eaf7f0;--card:#101311;--border:#1e2b22;--primary:#18eb6a;--muted:#a7eec5;--red:#ef4444;--green:#22c55e}
+    *{box-sizing:border-box}html,body{margin:0;padding:0}
+    body{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial}
+    .container{max-width:1000px;margin:0 auto;padding:24px}
+    header{position:sticky;top:0;background:#0c0d0cee;backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+    .title{font-size:28px;font-weight:800;color:#c7f7da;margin:0}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .tab{padding:8px 14px;border:1px solid var(--border);border-radius:10px;background:#0f120f;color:#cfeee0;text-decoration:none}
+    .tab.active{background:rgba(24,235,106,.15);color:var(--primary);border-color:rgba(24,235,106,.35)}
+    .section{padding:24px 0}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+    .row{display:grid;gap:16px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 14px;border-radius:10px;border:1px solid var(--border);background:#fff;color:#101311;cursor:pointer}
+    .btn.primary{background:#2bde94;color:#271b1b;border-color:#26c985}
+    .btn.ghost{background:transparent;color:#cfeee0}
+    .small{font-size:12px;color:var(--muted)}
+    .panel{display:none} .panel.active{display:block}
+    /* Quiz */
+    .quiz-option{width:100%;text-align:left;border:1px solid var(--border);background:#0f120f;color:#eaf7f0;border-radius:10px;padding:12px;cursor:pointer}
+    .quiz-option.correct{border-color:var(--green);background:rgba(34,197,94,.12)}
+    .quiz-option.wrong{border-color:var(--red);background:rgba(239,68,68,.12)}
+    /* Waste */
+    .draggable{cursor:move}
+    .bin{min-height:140px;border:2px dashed var(--border);border-radius:14px;padding:12px}
+    .bin-title{text-transform:capitalize;font-weight:700}
+    .item{border:1px solid var(--border);background:#0f120f;color:#eaf7f0;border-radius:10px;padding:8px}
+    .stat{font-weight:800;font-size:20px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1 class="title">Play: Games & Quizzes</h1>
+      <nav class="tabs">
+        <a href="#quiz" class="tab" id="tab-quiz">Eco Quiz</a>
+        <a href="#waste" class="tab" id="tab-waste">Waste Sorter</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Eco Quiz -->
+    <section id="quiz" class="panel section">
+      <div class="card" id="quiz-card">
+        <div class="small" id="quiz-progress"></div>
+        <h2 id="quiz-question" style="margin:8px 0 12px"></h2>
+        <div id="quiz-options" class="row" style="margin-top:8px"></div>
+        <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn ghost" id="quiz-restart" style="display:none">Restart</button>
+          <button class="btn primary" id="quiz-next" disabled>Next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Waste Sorter -->
+    <section id="waste" class="panel section">
+      <div class="row grid-2">
+        <div class="card">
+          <div class="small">Items</div>
+          <div id="items-list" class="row" style="margin-top:10px"></div>
+        </div>
+        <div class="row grid-3">
+          <div class="card bin" data-bin="recycle">
+            <div class="bin-title">recycle</div>
+            <div class="row" id="bin-recycle" style="margin-top:8px"></div>
+          </div>
+          <div class="card bin" data-bin="compost">
+            <div class="bin-title">compost</div>
+            <div class="row" id="bin-compost" style="margin-top:8px"></div>
+          </div>
+          <div class="card bin" data-bin="landfill">
+            <div class="bin-title">landfill</div>
+            <div class="row" id="bin-landfill" style="margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
+        <div class="small">Sorted: <span id="sorted-count">0</span>/<span id="total-count">0</span></div>
+        <div>
+          <span class="small">Score: <span class="stat" id="waste-score">0</span></span>
+          <button class="btn primary" id="waste-finish" style="margin-left:10px">Finish</button>
+          <button class="btn ghost" id="waste-restart" style="margin-left:6px">Restart</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Simple hash-tabs
+    function setActivePanel() {
+      const hash = location.hash || "#quiz";
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      const active = document.querySelector(hash);
+      const tab = document.querySelector("#tab-" + hash.replace("#",""));
+      if (active) active.classList.add("active");
+      if (tab) tab.classList.add("active");
+    }
+    window.addEventListener("hashchange", setActivePanel);
+    setActivePanel();
+
+    // ---- Eco Quiz ----
+    const QUESTIONS = [
+      { q: "Which gas is the main driver of climate change?", options: ["Oxygen","Carbon dioxide","Nitrogen","Helium"], answer: 1 },
+      { q: "Best practice to cut energy at school?", options: ["Leave lights on","Use LED bulbs","Open windows in winter","Run devices overnight"], answer: 1 },
+      { q: "Which goes into compost?", options: ["Banana peel","Glass bottle","Aluminum can","Plastic wrapper"], answer: 0 },
+      { q: "Reduce, reuse, ____?", options: ["Repeat","React","Recycle","Refill"], answer: 2 },
+      { q: "Cleaner commute option?", options: ["Car alone","Carpool","Idling car","Private jet"], answer: 1 },
+    ];
+    let qi = 0, score = 0, picked = null;
+
+    const $qProgress = document.getElementById("quiz-progress");
+    const $qQuestion = document.getElementById("quiz-question");
+    const $qOptions  = document.getElementById("quiz-options");
+    const $qNext     = document.getElementById("quiz-next");
+    const $qRestart  = document.getElementById("quiz-restart");
+
+    function renderQuiz() {
+      const done = qi >= QUESTIONS.length;
+      $qNext.disabled = picked === null;
+      $qRestart.style.display = done ? "inline-flex" : "none";
+      if (done) {
+        $qProgress.textContent = "Finished";
+        $qQuestion.textContent = `Your score: ${score}/${QUESTIONS.length} (${Math.round(score/QUESTIONS.length*100)}%)`;
+        $qOptions.innerHTML = "";
+        $qNext.textContent = "Play again";
+        return;
+      }
+      const cur = QUESTIONS[qi];
+      $qProgress.textContent = `Question ${qi+1} of ${QUESTIONS.length}`;
+      $qQuestion.textContent = cur.q;
+      $qOptions.innerHTML = "";
+      cur.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "quiz-option";
+        btn.textContent = opt;
+        btn.onclick = () => {
+          if (picked !== null) return;
+          picked = idx;
+          if (idx === cur.answer) { score++; btn.classList.add("correct"); }
+          else { btn.classList.add("wrong"); }
+          // mark the correct one
+          [...$qOptions.children].forEach((el, i) => {
+            if (i === cur.answer) el.classList.add("correct");
+          });
+          $qNext.disabled = false;
+        };
+        $qOptions.appendChild(btn);
+      });
+      $qNext.textContent = "Next";
+    }
+
+    $qNext.addEventListener("click", () => {
+      const done = qi >= QUESTIONS.length;
+      if (done) { // restart from summary
+        qi = 0; score = 0; picked = null; renderQuiz(); return;
+      }
+      qi++; picked = null; renderQuiz();
+    });
+    $qRestart.addEventListener("click", () => { qi = 0; score = 0; picked = null; renderQuiz(); });
+    renderQuiz();
+
+    // ---- Waste Sorter ----
+    const ALL_ITEMS = [
+      { id:"i1", name:"Banana peel",    bin:"compost"  },
+      { id:"i2", name:"Aluminum can",   bin:"recycle"  },
+      { id:"i3", name:"Paper",          bin:"recycle"  },
+      { id:"i4", name:"Glass bottle",   bin:"recycle"  },
+      { id:"i5", name:"Plastic wrapper",bin:"landfill" },
+      { id:"i6", name:"Tea leaves",     bin:"compost"  },
+    ];
+    let remaining = [];
+    const placed = { recycle:[], compost:[], landfill:[] };
+
+    const $items = document.getElementById("items-list");
+    const $binRecycle = document.getElementById("bin-recycle");
+    const $binCompost = document.getElementById("bin-compost");
+    const $binLandfill= document.getElementById("bin-landfill");
+    const $sorted = document.getElementById("sorted-count");
+    const $total  = document.getElementById("total-count");
+    const $score  = document.getElementById("waste-score");
+    const $finish = document.getElementById("waste-finish");
+    const $restart= document.getElementById("waste-restart");
+    $total.textContent = String(ALL_ITEMS.length);
+
+    function resetWaste() {
+      remaining = ALL_ITEMS.map(x=>({...x}));
+      placed.recycle.length = 0; placed.compost.length = 0; placed.landfill.length = 0;
+      renderWaste();
+    }
+    function renderWaste() {
+      $items.innerHTML = "";
+      remaining.forEach(it => {
+        const div = document.createElement("div");
+        div.className = "item draggable";
+        div.draggable = true;
+        div.textContent = it.name;
+        div.dataset.id = it.id;
+        div.addEventListener("dragstart", e => {
+          e.dataTransfer.setData("text/plain", it.id);
+        });
+        $items.appendChild(div);
+      });
+      $binRecycle.innerHTML = ""; placed.recycle.forEach(it => $binRecycle.appendChild(makePlaced(it)));
+      $binCompost.innerHTML = ""; placed.compost.forEach(it => $binCompost.appendChild(makePlaced(it)));
+      $binLandfill.innerHTML = ""; placed.landfill.forEach(it => $binLandfill.appendChild(makePlaced(it)));
+      const sortedCount = ALL_ITEMS.length - remaining.length;
+      $sorted.textContent = String(sortedCount);
+      $score.textContent = String(calcScore());
+    }
+    function makePlaced(it) {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.textContent = it.name;
+      return div;
+    }
+    document.querySelectorAll(".bin").forEach(binEl => {
+      binEl.addEventListener("dragover", e => e.preventDefault());
+      binEl.addEventListener("drop", e => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData("text/plain");
+        const idx = remaining.findIndex(x=>x.id===id);
+        if (idx === -1) return;
+        const it = remaining.splice(idx,1)[0];
+        const target = binEl.getAttribute("data-bin");
+        placed[target].push(it);
+        renderWaste();
+      });
+    });
+    function calcScore(){
+      const allPlaced = [...placed.recycle, ...placed.compost, ...placed.landfill];
+      return allPlaced.filter(it => placed[it.bin].some(p => p.id === it.id)).length;
+    }
+    $finish.addEventListener("click", () => {
+      alert(`Score: ${calcScore()}/${ALL_ITEMS.length}`);
+    });
+    $restart.addEventListener("click", resetWaste);
+    resetWaste();
+  </script>
+</body>
+</html>
