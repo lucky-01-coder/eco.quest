@@ -94,12 +94,11 @@
 
   // simple login forms (demo only)
   document.querySelectorAll('.login-form').forEach(form => {
-    // toggle custom school input for student form
-    const role = form.getAttribute('data-role') || 'user';
-    if (role === 'student') {
-      const schoolSelect = form.querySelector('select[name="school"]');
-      const customSchoolInput = form.querySelector('input[name="customSchool"]');
-      schoolSelect?.addEventListener('change', () => {
+    // toggle custom school input for any role that has it
+    const schoolSelect = form.querySelector('select[name="school"]');
+    const customSchoolInput = form.querySelector('input[name="customSchool"]');
+    if (schoolSelect && customSchoolInput) {
+      schoolSelect.addEventListener('change', () => {
         if (schoolSelect.value === '__other') { customSchoolInput.style.display = ''; }
         else { customSchoolInput.style.display = 'none'; customSchoolInput.value=''; }
       });
@@ -111,13 +110,13 @@
       const role = form.getAttribute('data-role') || 'user';
       const email = data.get('email');
       let school = data.get('school');
-      if (role === 'student' && school === '__other') {
+      if (school === '__other') {
         school = (data.get('customSchool')||'').toString().trim();
         if (!school) { alert('Please enter your school name.'); return; }
       }
       if(!school){ alert('Please select your school.'); return; }
-      const name = (data.get('studentName')||'').toString().trim();
-      if (role === 'student' && !name) { alert('Please enter your full name.'); return; }
+      const name = (data.get('studentName')||data.get('teacherName')||'').toString().trim();
+      if (!name) { alert('Please enter your full name.'); return; }
       const auth = { role, email, school, name, t: Date.now() };
       try{ localStorage.setItem('eco_auth', JSON.stringify(auth)); }catch{}
       alert(`Logged in as ${role}${name?` (${name})`:''} at ${school} (demo): ${email}`);
