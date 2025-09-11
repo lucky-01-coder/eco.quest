@@ -22,6 +22,12 @@
     <h1 class="h1" style="margin-top:8px">Teacher Login</h1>
     <p class="small">Sign in with your school email to manage classes and award badges.</p>
     <form class="login-form" data-role="teacher" style="margin-top:12px;display:grid;gap:10px">
+      <select class="select" name="school" required>
+        <option value="">Select school</option>
+        <option value="Eco High">Eco High</option>
+        <option value="Riverdale High">Riverdale High</option>
+        <option value="Sunrise Academy">Sunrise Academy</option>
+      </select>
       <input class="input" type="email" name="email" placeholder="School email" required />
       <input class="input" type="password" name="password" placeholder="Password" required />
       <button class="btn primary" type="submit">Log in as Teacher</button>
