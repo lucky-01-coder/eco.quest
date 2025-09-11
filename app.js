@@ -78,8 +78,12 @@
       const data = new FormData(form);
       const role = form.getAttribute('data-role') || 'user';
       const email = data.get('email');
-      alert(`Logged in as ${role} (demo): ${email}`);
-      form.reset();
+      const school = data.get('school');
+      if(!school){ alert('Please select your school.'); return; }
+      const auth = { role, email, school, t: Date.now() };
+      try{ localStorage.setItem('eco_auth', JSON.stringify(auth)); }catch{}
+      alert(`Logged in as ${role} at ${school} (demo): ${email}`);
+      if(role === 'teacher') location.href = '/dashboard.html'; else location.href = '/play.html';
     });
   });
 })();
