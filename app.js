@@ -121,7 +121,7 @@
       const auth = { role, email, school, name, t: Date.now() };
       try{ localStorage.setItem('eco_auth', JSON.stringify(auth)); }catch{}
       alert(`Logged in as ${role}${name?` (${name})`:''} at ${school} (demo): ${email}`);
-      if(role === 'teacher') location.href = '/dashboard.html'; else location.href = '/play.html';
+      if(role === 'teacher') location.href = '/dashboard.html'; else location.href = '/index.html';
     });
   });
 })();
