@@ -15,10 +15,15 @@
     const topTeamEl = document.getElementById('top-team');
     const tableBody = document.getElementById('leaderboard-body');
 
+    const auth = (()=>{ try { return JSON.parse(localStorage.getItem('eco_auth')||'{}'); } catch { return {}; } })();
+    const school = auth.school || '';
+    const qs = school ? `?school=${encodeURIComponent(school)}` : '';
+    document.getElementById('context-school') && (document.getElementById('context-school').textContent = school ? `Viewing data for ${school}` : '');
+
     const [teams, badges, leaderboard] = await Promise.all([
-      fetch('/api/teams').then(r=>r.json()).catch(()=>({teams:[]})),
-      fetch('/api/badges').then(r=>r.json()).catch(()=>({badges:[]})),
-      fetch('/api/leaderboard').then(r=>r.json()).catch(()=>({teams:[]})),
+      fetch(`/api/teams${qs}`).then(r=>r.json()).catch(()=>({teams:[]})),
+      fetch(`/api/badges${qs}`).then(r=>r.json()).catch(()=>({badges:[]})),
+      fetch(`/api/leaderboard${qs}`).then(r=>r.json()).catch(()=>({teams:[]})),
     ]);
 
     teamsEl && (teamsEl.textContent = String(teams.teams?.length||0));
