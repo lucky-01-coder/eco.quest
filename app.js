@@ -37,6 +37,7 @@
       adminBox && (adminBox.style.display = 'none');
       studentBox && (studentBox.style.display = 'block');
       document.getElementById('student-school') && (document.getElementById('student-school').textContent = school || '—');
+      document.getElementById('student-name') && (document.getElementById('student-name').textContent = (auth.name||'—'));
       const myTeam = (leaderboard.teams||[])[0] || {};
       document.getElementById('student-points') && (document.getElementById('student-points').textContent = String(myTeam.points||0));
       document.getElementById('student-badges') && (document.getElementById('student-badges').textContent = String(myTeam.badges?.length||0));
