@@ -70,4 +70,16 @@
     alert(`Thanks! We'll reach out at ${email}`);
     e.currentTarget.reset();
   });
+
+  // simple login forms (demo only)
+  document.querySelectorAll('.login-form').forEach(form => {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const role = form.getAttribute('data-role') || 'user';
+      const email = data.get('email');
+      alert(`Logged in as ${role} (demo): ${email}`);
+      form.reset();
+    });
+  });
 })();
