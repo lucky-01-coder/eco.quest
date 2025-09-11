@@ -30,6 +30,21 @@
     badgesEl && (badgesEl.textContent = String(badges.badges?.length||0));
     topTeamEl && (topTeamEl.textContent = leaderboard.teams?.[0]?.name || '—');
 
+    const role = auth.role || '';
+    const adminBox = document.getElementById('admin-actions');
+    const studentBox = document.getElementById('student-view');
+    if(role === 'student'){
+      adminBox && (adminBox.style.display = 'none');
+      studentBox && (studentBox.style.display = 'block');
+      document.getElementById('student-school') && (document.getElementById('student-school').textContent = school || '—');
+      const myTeam = (leaderboard.teams||[])[0] || {};
+      document.getElementById('student-points') && (document.getElementById('student-points').textContent = String(myTeam.points||0));
+      document.getElementById('student-badges') && (document.getElementById('student-badges').textContent = String(myTeam.badges?.length||0));
+    } else {
+      adminBox && (adminBox.style.display = 'block');
+      studentBox && (studentBox.style.display = 'none');
+    }
+
     if(tableBody){
       tableBody.innerHTML='';
       (leaderboard.teams||[]).forEach((t,i)=>{
