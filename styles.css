@@ -11,7 +11,7 @@
 .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media (max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
-.hero{background:#0a0a0a;color:#8ee350;padding:56px 0;border-bottom:1px solid var(--border)}
+.hero{background:#0a0a0a;color:#8ee350;padding:56px 0;border-bottom:1px solid var(--border);background-image:url('https://images.pexels.com/photos/25961227/pexels-photo-25961227.jpeg');background-size:cover;background-position:center;background-repeat:no-repeat}
 .h1{font-size:40px;font-weight:800;color:#3eeaa0;margin:12px 0}
 .lead{color:#e6fff3}
 .btn{display:inline-flex;gap:8px;align-items:center;justify-content:center;height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--border);background:#fff;color:#101311;cursor:pointer}
@@ -27,3 +27,12 @@
 .input{height:44px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:#0f120f;color:#e6fff3}
 .select{height:44px;border:1px solid var(--border);border-radius:10px;background:#08b208;color:#e6fff3;padding:0 10px}
 .small{font-size:12px;color:#a7eec5}
+/* hero-specific overrides */
+.hero{font-weight:600}
+.hero .h1{color:#fff;line-height:60px}
+.hero .lead{color:#fff;font-weight:600}
+.hero .badge{font-size:20px;font-weight:600}
+.hero .btn{font-weight:600;text-decoration:underline}
+.hero .btn.primary{background:#fff;color:#271b1b}
+.hero .grid-2>div:nth-child(2)>.card{background:#fff;border-color:#fff;opacity:.61}
+.hero .grid-2>div:nth-child(2)>.card .badge{background:rgba(21,122,60,.15);color:rgba(63,76,68,1);font-size:15px}

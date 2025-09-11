@@ -10,6 +10,8 @@
     <a href="/impact.html">Impact</a>
     <a href="/learn.html">Learn</a>
     <a href="/dashboard.html">Dashboard</a>
+    <a href="/teacher-login.html">Teacher Login</a>
+    <a href="/student-login.html">Student Login</a>
     <a href="/index.html">Home</a>
   </nav>
 </div></header>
@@ -18,6 +20,7 @@
     <span class="badge">🏆 Educator Sandbox</span>
     <h1 class="h1">Dashboard</h1>
     <p class="lead">Manage eco‑points, award badges, and track competitions.</p>
+    <div class="small" id="context-school" style="margin-top:6px"></div>
 
     <div class="row grid-3" style="margin-top:16px">
       <div class="card"><div class="small">Teams</div><div id="teams-count" style="font-weight:800;font-size:22px">0</div></div>
@@ -26,7 +29,17 @@
     </div>
 
     <div class="row grid-2" style="margin-top:16px">
-      <div class="card">
+      <div class="card" id="student-view" style="display:none">
+        <div class="small">Student View</div>
+        <div class="small" style="margin-top:6px">Welcome, <span id="student-name" style="font-weight:700">—</span></div>
+        <div class="row grid-3" style="margin-top:10px">
+          <div class="card"><div class="small">School</div><div id="student-school" style="font-weight:800">—</div></div>
+          <div class="card"><div class="small">My Points</div><div id="student-points" style="font-weight:800;font-size:22px">0</div></div>
+          <div class="card"><div class="small">Badges</div><div id="student-badges" style="font-weight:700">0</div></div>
+        </div>
+        <div style="margin-top:10px"><a class="btn primary" href="/play.html">Go to Quests</a></div>
+      </div>
+      <div class="card" id="admin-actions">
         <div class="small">Admin Actions</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
           <select id="team-select" class="select"><option value="">Select team</option></select>
@@ -44,6 +57,13 @@
           <tbody id="leaderboard-body"></tbody>
         </table>
       </div>
+    </div>
+    <div class="card" id="students-card" style="margin-top:16px;display:none">
+      <div class="small">Students (logins)</div>
+      <table class="table">
+        <thead><tr><th>Name</th><th>Email</th><th>School</th><th>Last Login</th></tr></thead>
+        <tbody id="students-table-body"></tbody>
+      </table>
     </div>
   </div></section>
 </main>
