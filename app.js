@@ -93,16 +93,33 @@
 
   // simple login forms (demo only)
   document.querySelectorAll('.login-form').forEach(form => {
+    // toggle custom school input for student form
+    const role = form.getAttribute('data-role') || 'user';
+    if (role === 'student') {
+      const schoolSelect = form.querySelector('select[name="school"]');
+      const customSchoolInput = form.querySelector('input[name="customSchool"]');
+      schoolSelect?.addEventListener('change', () => {
+        if (schoolSelect.value === '__other') { customSchoolInput.style.display = ''; }
+        else { customSchoolInput.style.display = 'none'; customSchoolInput.value=''; }
+      });
+    }
+
     form.addEventListener('submit', e => {
       e.preventDefault();
       const data = new FormData(form);
       const role = form.getAttribute('data-role') || 'user';
       const email = data.get('email');
-      const school = data.get('school');
+      let school = data.get('school');
+      if (role === 'student' && school === '__other') {
+        school = (data.get('customSchool')||'').toString().trim();
+        if (!school) { alert('Please enter your school name.'); return; }
+      }
       if(!school){ alert('Please select your school.'); return; }
-      const auth = { role, email, school, t: Date.now() };
+      const name = (data.get('studentName')||'').toString().trim();
+      if (role === 'student' && !name) { alert('Please enter your full name.'); return; }
+      const auth = { role, email, school, name, t: Date.now() };
       try{ localStorage.setItem('eco_auth', JSON.stringify(auth)); }catch{}
-      alert(`Logged in as ${role} at ${school} (demo): ${email}`);
+      alert(`Logged in as ${role}${name?` (${name})`:''} at ${school} (demo): ${email}`);
       if(role === 'teacher') location.href = '/dashboard.html'; else location.href = '/play.html';
     });
   });
