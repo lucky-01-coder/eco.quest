@@ -55,6 +55,23 @@
       });
     }
 
+    // Teacher view: render student logins
+    const studentsCard = document.getElementById('students-card');
+    const studentsTbody = document.getElementById('students-table-body');
+    if ((auth.role||'') === 'teacher' && studentsCard && studentsTbody) {
+      studentsCard.style.display = 'block';
+      const list = (()=>{ try { return JSON.parse(localStorage.getItem('eco_students')||'[]'); } catch { return []; } })();
+      studentsTbody.innerHTML='';
+      list.forEach(s => {
+        const tr = document.createElement('tr');
+        const when = s.t ? new Date(s.t).toLocaleString() : '';
+        tr.innerHTML = `<td>${s.name||'—'}</td><td>${s.email||''}</td><td>${s.school||''}</td><td>${when}</td>`;
+        studentsTbody.appendChild(tr);
+      });
+    } else if (studentsCard) {
+      studentsCard.style.display = 'none';
+    }
+
     const teamSelect = document.getElementById('team-select');
     const badgeSelect = document.getElementById('badge-select');
     if(teamSelect){
@@ -118,7 +135,16 @@
       const name = (data.get('studentName')||data.get('teacherName')||'').toString().trim();
       if (!name) { alert('Please enter your full name.'); return; }
       const auth = { role, email, school, name, t: Date.now() };
-      try{ localStorage.setItem('eco_auth', JSON.stringify(auth)); }catch{}
+      try{
+        localStorage.setItem('eco_auth', JSON.stringify(auth));
+        if (role === 'student') {
+          const key = 'eco_students';
+          const list = (()=>{ try { return JSON.parse(localStorage.getItem(key)||'[]'); } catch { return []; } })();
+          const idx = list.findIndex(s => s.email === email && s.school === school);
+          if (idx >= 0) list[idx] = auth; else list.push(auth);
+          localStorage.setItem(key, JSON.stringify(list));
+        }
+      }catch{}
       alert(`Logged in as ${role}${name?` (${name})`:''} at ${school} (demo): ${email}`);
       if(role === 'teacher') location.href = '/dashboard.html'; else location.href = '/index.html';
     });
