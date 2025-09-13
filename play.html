@@ -35,6 +35,13 @@
     .bin-title{text-transform:capitalize;font-weight:700}
     .item{border:1px solid var(--border);background:#0f120f;color:#eaf7f0;border-radius:10px;padding:8px}
     .stat{font-weight:800;font-size:20px}
+    /* Energy Saver */
+    .meter{height:8px;border:1px solid var(--border);border-radius:999px;background:#0f120f;overflow:hidden}
+    .meter-fill{height:100%;background:linear-gradient(90deg,#12d06f,#18eb6a);width:0%}
+    .toggle-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);background:#0f120f;color:#eaf7f0;border-radius:10px;padding:10px}
+    .dim{opacity:.7}
+    /* Transit Ranker */
+    .draggable-row{border:1px solid var(--border);background:#0f120f;color:#eaf7f0;border-radius:10px;padding:8px;cursor:move}
   </style>
 </head>
 <body>
@@ -44,6 +51,8 @@
       <nav class="tabs">
         <a href="#quiz" class="tab" id="tab-quiz">Eco Quiz</a>
         <a href="#waste" class="tab" id="tab-waste">Waste Sorter</a>
+        <a href="#energy" class="tab" id="tab-energy">Energy Saver</a>
+        <a href="#transit" class="tab" id="tab-transit">Transit Ranker</a>
       </nav>
       <div style="margin-top:10px;display:flex;justify-content:flex-end">
         <a class="btn" href="/index.html">Home</a>
@@ -93,6 +102,49 @@
           <span class="small">Score: <span class="stat" id="waste-score">0</span></span>
           <button class="btn primary" id="waste-finish" style="margin-left:10px">Finish</button>
           <button class="btn ghost" id="waste-restart" style="margin-left:6px">Restart</button>
+        </div>
+      </div>
+    </section>
+    <!-- Energy Saver -->
+    <section id="energy" class="panel section">
+      <div class="row grid-2">
+        <div class="card">
+          <div class="small">Goal: reduce classroom power by ≥30%</div>
+          <div id="energy-list" class="row" style="margin-top:10px"></div>
+          <div style="margin-top:12px">
+            <div class="meter"><div id="energy-meter" class="meter-fill"></div></div>
+            <div class="small" style="margin-top:6px">
+              Baseline: <span id="energy-base" class="stat">0</span> W · Current: <span id="energy-current" class="stat">0</span> W · Reduction: <span id="energy-pct" class="stat">0</span>%
+            </div>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn primary" id="energy-finish">Finish</button>
+            <button class="btn" id="energy-all-off">Turn all off</button>
+            <button class="btn ghost" id="energy-reset">Reset</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="small">Tips</div>
+          <ul class="small" style="margin-top:8px">
+            <li>Switch to LEDs and turn off when leaving.</li>
+            <li>Use power management on computers.</li>
+            <li>Optimize AC setpoint and seal drafts.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transit Ranker -->
+    <section id="transit" class="panel section">
+      <div class="card">
+        <div class="small">Rank from greenest (top) to highest emissions (bottom)</div>
+        <div id="transit-list" class="row" style="margin-top:10px"></div>
+        <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+          <div class="small">Correct in place: <span id="transit-score" class="stat">0</span>/<span id="transit-total">0</span></div>
+          <div>
+            <button class="btn primary" id="transit-check">Check order</button>
+            <button class="btn" id="transit-shuffle" style="margin-left:6px">Shuffle</button>
+          </div>
         </div>
       </div>
     </section>
@@ -249,6 +301,111 @@
     });
     $restart.addEventListener("click", resetWaste);
     resetWaste();
+    // ---- Energy Saver ----
+    (function(){
+      const ITEMS = [
+        { id:'l', name:'Classroom lights (20 LED bulbs)', w:200, on:true },
+        { id:'p', name:'Projector', w:250, on:true },
+        { id:'c', name:'Computers (10)', w:400, on:true },
+        { id:'a', name:'AC unit', w:1200, on:true },
+        { id:'s', name:'Smartboard', w:150, on:true },
+      ];
+      const $list = document.getElementById('energy-list');
+      const $base = document.getElementById('energy-base');
+      const $cur  = document.getElementById('energy-current');
+      const $pct  = document.getElementById('energy-pct');
+      const $meter= document.getElementById('energy-meter');
+      const $finish= document.getElementById('energy-finish');
+      const $allOff= document.getElementById('energy-all-off');
+      const $reset = document.getElementById('energy-reset');
+      if ($list) {
+        const BASE = ITEMS.reduce((sum,i)=>sum+i.w,0);
+        $base.textContent = String(BASE);
+        function render(){
+          $list.innerHTML='';
+          let cur=0;
+          ITEMS.forEach(it=>{
+            if (it.on) cur+=it.w;
+            const row = document.createElement('div');
+            row.className = 'toggle-row' + (it.on ? '' : ' dim');
+            row.innerHTML = `
+              <div>
+                <div style="font-weight:600">${it.name}</div>
+                <div class="small">${it.w} W</div>
+              </div>
+              <button class="btn">${it.on ? 'On' : 'Off'}</button>
+            `;
+            row.querySelector('button').addEventListener('click', ()=>{
+              it.on = !it.on; render();
+            });
+            $list.appendChild(row);
+          });
+          const reduction = Math.round((1 - cur/BASE)*100);
+          $cur.textContent = String(cur);
+          $pct.textContent = String(reduction);
+          $meter.style.width = Math.max(0, Math.min(100, reduction)) + '%';
+          $finish.onclick = ()=>{ alert(`Reduction: ${reduction}% (${BASE-cur} W saved). Target: 30%.`); };
+          $allOff.onclick = ()=>{ ITEMS.forEach(i=>i.on=false); render(); };
+          $reset.onclick = ()=>{ ITEMS.forEach(i=>i.on=true); render(); };
+        }
+        render();
+      }
+    })();
+
+    // ---- Transit Ranker ----
+    (function(){
+      const CORRECT = [
+        { id:'walk', label:'Walking' },
+        { id:'bike', label:'Bicycle' },
+        { id:'bus',  label:'Public bus' },
+        { id:'carpool', label:'Carpool (2–3)' },
+        { id:'car',  label:'Car (solo)' },
+        { id:'plane',label:'Plane (short‑haul)' },
+      ];
+      const $list = document.getElementById('transit-list');
+      const $score= document.getElementById('transit-score');
+      const $total= document.getElementById('transit-total');
+      const $check= document.getElementById('transit-check');
+      const $shuffle=document.getElementById('transit-shuffle');
+      if ($list) {
+        let order = CORRECT.map(x=>({...x})).sort(()=>Math.random()-0.5);
+        $total.textContent = String(CORRECT.length);
+        function render(){
+          $list.innerHTML='';
+          order.forEach(item=>{
+            const row = document.createElement('div');
+            row.className = 'draggable-row';
+            row.draggable = true;
+            row.dataset.id = item.id;
+            row.textContent = item.label;
+            row.addEventListener('dragstart', e=>{
+              e.dataTransfer.setData('text/plain', item.id);
+            });
+            row.addEventListener('dragover', e=>e.preventDefault());
+            row.addEventListener('drop', e=>{
+              e.preventDefault();
+              const draggedId = e.dataTransfer.getData('text/plain');
+              if (!draggedId || draggedId === item.id) return;
+              const from = order.findIndex(x=>x.id===draggedId);
+              const to   = order.findIndex(x=>x.id===item.id);
+              const [moved] = order.splice(from,1);
+              order.splice(to,0,moved);
+              render();
+            });
+            $list.appendChild(row);
+          });
+          updateScore();
+        }
+        function updateScore(){
+          let correctPos = 0;
+          order.forEach((it, idx)=>{ if (it.id === CORRECT[idx].id) correctPos++; });
+          $score.textContent = String(correctPos);
+        }
+        $check.onclick = ()=>{ updateScore(); alert(`Correct positions: ${$score.textContent}/${CORRECT.length}`); };
+        $shuffle.onclick = ()=>{ order = CORRECT.map(x=>({...x})).sort(()=>Math.random()-0.5); render(); };
+        render();
+      }
+    })();
   </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 (function(){
-  const path = location.pathname;
+  const path = location.pathname.endsWith('/') ? location.pathname + 'index.html' : location.pathname;
   // nav active
   document.querySelectorAll('[data-nav] a').forEach(a=>{
     const href = a.getAttribute('href');
@@ -25,6 +25,29 @@
       fetch(`/api/badges${qs}`).then(r=>r.json()).catch(()=>({badges:[]})),
       fetch(`/api/leaderboard${qs}`).then(r=>r.json()).catch(()=>({teams:[]})),
     ]);
+
+    // Fallback to local data when API is unavailable
+    try {
+      const lsStudents = (()=>{ try { return JSON.parse(localStorage.getItem('eco_students')||'[]'); } catch { return []; } })();
+      const lsScores = (()=>{ try { return JSON.parse(localStorage.getItem('eco_scores')||'{}'); } catch { return {}; } })();
+      if (!badges.badges || !badges.badges.length) {
+        badges.badges = [
+          { id:'recycle_champ', name:'Recycle Champ', icon:'♻️' },
+          { id:'energy_star', name:'Energy Star', icon:'⚡' },
+          { id:'water_guard', name:'Water Guard', icon:'💧' },
+          { id:'eco_leader', name:'Eco Leader', icon:'🌟' },
+          { id:'waste_warrior', name:'Waste Warrior', icon:'🗑️' },
+          { id:'green_commuter', name:'Green Commuter', icon:'🚲' },
+        ];
+      }
+      const filtered = school ? lsStudents.filter(s => s.school === school) : lsStudents;
+      const lbTeams = filtered.map(s => {
+        const sc = lsScores[s.email] || { points:0, badges:[] };
+        return { id:s.email, name:s.name || s.email, points: sc.points||0, badges: (sc.badges||[]).map(id=>({id})) };
+      }).sort((a,b)=> (b.points||0) - (a.points||0));
+      if (!leaderboard.teams || !leaderboard.teams.length) leaderboard.teams = lbTeams;
+      if (!teams.teams || !teams.teams.length) teams.teams = lbTeams;
+    } catch {}
 
     teamsEl && (teamsEl.textContent = String(teams.teams?.length||0));
     badgesEl && (badgesEl.textContent = String(badges.badges?.length||0));
@@ -72,11 +95,16 @@
       studentsCard.style.display = 'none';
     }
 
-    const teamSelect = document.getElementById('team-select');
+    const studentSelect = document.getElementById('student-select');
     const badgeSelect = document.getElementById('badge-select');
-    if(teamSelect){
-      (teams.teams||[]).forEach(t=>{
-        const o=document.createElement('option');o.value=t.id;o.textContent=t.name;teamSelect.appendChild(o);
+    if(studentSelect){
+      const list = (()=>{ try { return JSON.parse(localStorage.getItem('eco_students')||'[]'); } catch { return []; } })();
+      const filtered = school ? list.filter(s => s.school === school) : list;
+      filtered.forEach(s=>{
+        const o=document.createElement('option');
+        o.value = s.email;
+        o.textContent = (s.name||s.email) + (s.school ? ` — ${s.school}` : '');
+        studentSelect.appendChild(o);
       });
     }
     if(badgeSelect){
@@ -90,13 +118,26 @@
     document.getElementById('awardBadge')?.addEventListener('click',awardBadge);
 
     async function awardPoints(delta){
-      const teamId = teamSelect?.value; if(!teamId) return;
-      await fetch('/api/points',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({teamId,points:delta})});
+      const studentEmail = studentSelect?.value; if(!studentEmail) return;
+      const key = 'eco_scores';
+      const scores = (()=>{ try { return JSON.parse(localStorage.getItem(key)||'{}'); } catch { return {}; } })();
+      const cur = scores[studentEmail] || { points:0, badges:[] };
+      cur.points = (cur.points||0) + (delta||0);
+      scores[studentEmail] = cur;
+      localStorage.setItem(key, JSON.stringify(scores));
+      alert(`+${delta} points awarded to ${studentEmail}`);
       initDashboard();
     }
     async function awardBadge(){
-      const teamId = teamSelect?.value; const badgeId = badgeSelect?.value; if(!teamId||!badgeId) return;
-      await fetch('/api/badges',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({teamId,badgeId})});
+      const studentEmail = studentSelect?.value; const badgeId = badgeSelect?.value; if(!studentEmail||!badgeId) return;
+      const key = 'eco_scores';
+      const scores = (()=>{ try { return JSON.parse(localStorage.getItem(key)||'{}'); } catch { return {}; } })();
+      const cur = scores[studentEmail] || { points:0, badges:[] };
+      if (!cur.badges.includes(badgeId)) cur.badges.push(badgeId);
+      scores[studentEmail] = cur;
+      localStorage.setItem(key, JSON.stringify(scores));
+      const b = (badges.badges||[]).find(x=>x.id===badgeId);
+      alert(`Badge awarded: ${(b?.icon?b.icon+' ':'')}${b?.name||badgeId} to ${studentEmail}`);
       initDashboard();
     }
   }
@@ -147,6 +188,20 @@
       }catch{}
       alert(`Logged in as ${role}${name?` (${name})`:''} at ${school} (demo): ${email}`);
       if(role === 'teacher') location.href = '/dashboard.html'; else location.href = '/index.html';
+    });
+  });
+  // clickable cards with data-href (option a)
+  document.querySelectorAll('.card[data-href]').forEach(card => {
+    const href = card.getAttribute('data-href'); if(!href) return;
+    card.setAttribute('role','link');
+    card.setAttribute('tabindex','0');
+    // ignore clicks originating from interactive children
+    card.addEventListener('click', e => {
+      if ((e.target && (e.target.closest('a,button,input,select,textarea')))) return;
+      location.href = href;
+    });
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.href = href; }
     });
   });
 })();
