@@ -1,5 +1,5 @@
 (function(){
-  const path = location.pathname;
+  const path = location.pathname.endsWith('/') ? location.pathname + 'index.html' : location.pathname;
   // nav active
   document.querySelectorAll('[data-nav] a').forEach(a=>{
     const href = a.getAttribute('href');
