@@ -149,4 +149,18 @@
       if(role === 'teacher') location.href = '/dashboard.html'; else location.href = '/index.html';
     });
   });
+  // clickable cards with data-href (option a)
+  document.querySelectorAll('.card[data-href]').forEach(card => {
+    const href = card.getAttribute('data-href'); if(!href) return;
+    card.setAttribute('role','link');
+    card.setAttribute('tabindex','0');
+    // ignore clicks originating from interactive children
+    card.addEventListener('click', e => {
+      if ((e.target && (e.target.closest('a,button,input,select,textarea')))) return;
+      location.href = href;
+    });
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.href = href; }
+    });
+  });
 })();
