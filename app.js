@@ -72,11 +72,16 @@
       studentsCard.style.display = 'none';
     }
 
-    const teamSelect = document.getElementById('team-select');
+    const studentSelect = document.getElementById('student-select');
     const badgeSelect = document.getElementById('badge-select');
-    if(teamSelect){
-      (teams.teams||[]).forEach(t=>{
-        const o=document.createElement('option');o.value=t.id;o.textContent=t.name;teamSelect.appendChild(o);
+    if(studentSelect){
+      const list = (()=>{ try { return JSON.parse(localStorage.getItem('eco_students')||'[]'); } catch { return []; } })();
+      const filtered = school ? list.filter(s => s.school === school) : list;
+      filtered.forEach(s=>{
+        const o=document.createElement('option');
+        o.value = s.email;
+        o.textContent = (s.name||s.email) + (s.school ? ` — ${s.school}` : '');
+        studentSelect.appendChild(o);
       });
     }
     if(badgeSelect){
@@ -90,13 +95,13 @@
     document.getElementById('awardBadge')?.addEventListener('click',awardBadge);
 
     async function awardPoints(delta){
-      const teamId = teamSelect?.value; if(!teamId) return;
-      await fetch('/api/points',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({teamId,points:delta})});
+      const studentEmail = studentSelect?.value; if(!studentEmail) return;
+      await fetch('/api/points',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentEmail,points:delta})});
       initDashboard();
     }
     async function awardBadge(){
-      const teamId = teamSelect?.value; const badgeId = badgeSelect?.value; if(!teamId||!badgeId) return;
-      await fetch('/api/badges',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({teamId,badgeId})});
+      const studentEmail = studentSelect?.value; const badgeId = badgeSelect?.value; if(!studentEmail||!badgeId) return;
+      await fetch('/api/badges',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentEmail,badgeId})});
       initDashboard();
     }
   }
