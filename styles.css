@@ -37,5 +37,54 @@
 .hero .grid-2>div:nth-child(2)>.card{background:#fff;border-color:#fff;opacity:.61}
 .hero .grid-2>div:nth-child(2)>.card .badge{background:rgba(21,122,60,.15);color:rgba(63,76,68,1);font-size:15px}
 /* clickable card enhancements */
-.card-link{cursor:pointer}
+.card-link{cursor:pointer;display:block;text-decoration:none;color:inherit}
 .card-link:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+/* Utilities to replace inline styles */
+.flex{display:flex}
+.grid-two{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:10px}
+.grid-col{display:grid}
+.justify-between{justify-content:space-between}
+.justify-end{justify-content:flex-end}
+.items-center{align-items:center}
+.gap-16{gap:16px}
+.gap-12{gap:12px}
+.gap-10{gap:10px}
+.gap-8{gap:8px}
+.wrap{flex-wrap:wrap}
+.mt-4{margin-top:4px}
+.mt-6{margin-top:6px}
+.mt-8{margin-top:8px}
+.mt-10{margin-top:10px}
+.mt-12{margin-top:12px}
+.mt-14{margin-top:14px}
+.mt-16{margin-top:16px}
+.ml-6{margin-left:6px}
+.ml-10{margin-left:10px}
+.text-right{text-align:right}
+.fw-600{font-weight:600}
+.fw-700{font-weight:700}
+.fw-800{font-weight:800}
+.maxw-560{max-width:560px}
+.stat{font-weight:800;font-size:22px}
+
+/* Quiz */
+.quiz-option{width:100%;text-align:left;border:1px solid var(--border);background:#0f120f;color:#eaf7f0;border-radius:10px;padding:12px;cursor:pointer}
+.quiz-option.correct{border-color:#22c55e;background:rgba(34,197,94,.12)}
+.quiz-option.wrong{border-color:#ef4444;background:rgba(239,68,68,.12)}
+/* Waste */
+.draggable{cursor:move}
+.bin{min-height:140px;border:2px dashed var(--border);border-radius:14px;padding:12px}
+.bin-title{text-transform:capitalize;font-weight:700}
+.item{border:1px solid var(--border);background:#0f120f;color:#eaf7f0;border-radius:10px;padding:8px}
+/* Energy */
+.meter{height:8px;border:1px solid var(--border);border-radius:999px;background:#0f120f;overflow:hidden}
+.meter-fill{height:100%;background:linear-gradient(90deg,#12d06f,#18eb6a);width:0%}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);background:#0f120f;color:#eaf7f0;border-radius:10px;padding:10px}
+.dim{opacity:.7}
+/* Transit */
+.draggable-row{border:1px solid var(--border);background:#0f120f;color:#eaf7f0;border-radius:10px;padding:8px;cursor:move}
+/* Learn */
+.progress{height:8px;border:1px solid var(--border);border-radius:999px;background:#0f120f;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#12d06f,#18eb6a);width:0%}
+.item.grid-two input{margin-top:4px}
