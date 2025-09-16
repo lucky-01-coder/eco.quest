@@ -1,5 +1,8 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 
+// Helper to format bullet arrays as a single string
+const bullets = (arr) => arr.map(s => `• ${s}`).join(' ');
+
 // SDG 13 content adapted from United Nations (https://sdgs.un.org/goals/goal13)
 const SDG13 = (()=>{
   const overview = "SDG 13, Climate Action, calls for urgent action to combat climate change and its impacts. It emphasizes strengthening resilience, integrating climate measures into policy, and supporting vulnerable communities through adaptation and mitigation efforts.";
@@ -46,11 +49,11 @@ const SDG13 = (()=>{
     "Green Climate Fund: A financial mechanism to help developing countries fund climate mitigation and adaptation projects.",
     "SIDS: Small Island Developing States, highly vulnerable to climate impacts and sea-level rise."
   ];
-  const bullets = arr => arr.map(s => `• ${s}`).join(' ');
   return {
     id: 'sdg13',
     title: 'SDG 13: Climate Action (UN)',
     desc: overview,
+    source: 'United Nations — SDG 13 (Climate Action)',
     lessons: [
       { title: 'Overview', content: overview },
       { title: 'Why it matters', content: bullets(why) },
@@ -62,8 +65,137 @@ const SDG13 = (()=>{
   };
 })();
 
+// NEP 2020 environmental education focus (https://www.education.gov.in/nep)
+const NEP2020 = (()=>{
+  const overview = "NEP 2020 embeds Environmental Education and sustainability across the curriculum, advancing ecological literacy, experiential learning, and community engagement.";
+  const key_principles = [
+    "Environmental education integrated across levels and disciplines, not a standalone silo.",
+    "Sustainability and climate resilience as core competencies tied to local contexts.",
+    "Holistic, multidisciplinary approaches linking environment, economy, and society.",
+    "Ethics of care for biodiversity and natural resources inform curriculum and culture.",
+    "Schools as living laboratories modeling sustainable practices (energy, water, waste, biodiversity).",
+    "Equity and accessibility so EE reaches marginalized learners.",
+    "Teacher capacity development prioritized for field-based learning.",
+    "Assessment emphasizes projects and demonstrated action over rote learning."
+  ];
+  const pedagogy = [
+    "Experiential, place-based learning with field visits and nature activities.",
+    "Project/inquiry learning where students identify local issues and co-create solutions.",
+    "Community learning with families, NGOs, local bodies, and indigenous knowledge.",
+    "Interdisciplinary modules spanning science, social studies, arts, language, and math.",
+    "Service-learning that achieves tangible local environmental improvements.",
+    "Campus energy/water/waste/biodiversity audits as routine practice.",
+    "Media and data literacy to interpret environmental information and policy.",
+    "Digital and hands-on simulations to explore sustainability scenarios."
+  ];
+  const assessment = [
+    "Portfolio-based evidence: fieldwork, projects, impact, and reflection.",
+    "Performance tasks and rubrics aligned to systems thinking and action competence.",
+    "Community project demonstrations with documented outcomes.",
+    "Monitoring school sustainability metrics via student-led dashboards."
+  ];
+  const implementation = [
+    "Integrate EE across subjects in timetables and schemes of work.",
+    "In-service teacher training on climate literacy and experiential pedagogy.",
+    "Eco-clubs and campus EE labs for sustained practice.",
+    "Partnerships with panchayats/municipalities to align with local needs.",
+    "Add EE indicators to school improvement plans and reporting.",
+    "Student participation in biodiversity conservation and climate resilience projects."
+  ];
+  const green_skills = [
+    "Impact assessment and lifecycle thinking.",
+    "Resource management: energy, water, waste, soil, biodiversity.",
+    "Climate literacy, risk reduction, and adaptation planning.",
+    "Green entrepreneurship and innovation.",
+    "Data collection and analysis for environmental monitoring.",
+    "Communication and advocacy for community action."
+  ];
+  return {
+    id: 'nep2020',
+    title: 'NEP 2020: Environmental Education',
+    desc: overview,
+    source: 'Government of India — NEP 2020',
+    lessons: [
+      { title: 'Overview', content: overview },
+      { title: 'Key principles', content: bullets(key_principles) },
+      { title: 'Pedagogy', content: bullets(pedagogy) },
+      { title: 'Assessment', content: bullets(assessment) },
+      { title: 'Implementation', content: bullets(implementation) },
+      { title: 'Green skills', content: bullets(green_skills) },
+    ]
+  };
+})();
+
+// UNESCO ESD for 2030 essentials (https://www.unesco.org/en)
+const UNESCO_ESD = (()=>{
+  const overview = "UNESCO's ESD for 2030 promotes a whole-institution, competency-based approach that equips learners to act for sustainable development.";
+  const competencies = [
+    "Systems thinking for socio-ecological interconnections.",
+    "Futures literacy and scenario thinking.",
+    "Critical thinking, inquiry, and scientific literacy.",
+    "Values-based decision-making and ethics.",
+    "Collaborative problem solving across disciplines.",
+    "Action competence to design and scale solutions.",
+    "Civic participation and community engagement.",
+    "Creativity, innovation, and adaptive learning.",
+    "Digital and media literacy for sustainability communication.",
+    "Respect for cultural diversity and inclusion."
+  ];
+  const whole_institution = [
+    "Embed ESD in vision, policy, governance, and daily practice.",
+    "Integrate sustainability across all subjects and curricula.",
+    "Educator professional development and communities of practice.",
+    "Partnerships with communities, universities, civil society, and business.",
+    "Monitoring, evaluation, and learning systems for outcomes.",
+    "Equity, gender equality, and social justice as cross-cutting principles."
+  ];
+  const teacher_training = [
+    "Pre-service and in-service training centered on sustainability competencies.",
+    "Inquiry/project/experiential methods for sustainability.",
+    "Communities of practice for resource and evidence sharing.",
+    "Classroom practices for systems thinking and futures literacy.",
+    "Assessment of competencies and impact indicators.",
+    "Guidance to integrate local challenges and partnerships."
+  ];
+  const community_engagement = [
+    "Co-create learning with families, communities, and youth.",
+    "Service learning and local stewardship projects.",
+    "Partnerships with NGOs and local government for alignment.",
+    "Platforms for indigenous knowledge and cultural diversity.",
+    "Continuous dialogue and accountability mechanisms."
+  ];
+  const themes = [
+    "Climate action and resilience",
+    "Biodiversity and ecosystem services",
+    "Water and resource management",
+    "Sustainable food systems and agriculture",
+    "Energy transition and sustainable cities",
+    "Health, well-being, and equitable education",
+    "Quality education and lifelong learning",
+    "Digital/media literacy and governance",
+    "Cultural diversity, heritage, creative expression",
+    "Peace, justice, and inclusive societies"
+  ];
+  return {
+    id: 'unesco-esd',
+    title: 'UNESCO: ESD for 2030',
+    desc: overview,
+    source: 'UNESCO — Education for Sustainable Development (ESD) 2030',
+    lessons: [
+      { title: 'Overview', content: overview },
+      { title: 'Key competencies', content: bullets(competencies) },
+      { title: 'Whole-institution approach', content: bullets(whole_institution) },
+      { title: 'Teacher training', content: bullets(teacher_training) },
+      { title: 'Community engagement', content: bullets(community_engagement) },
+      { title: 'Themes', content: bullets(themes) },
+    ]
+  };
+})();
+
 const MODULES = [
   SDG13,
+  NEP2020,
+  UNESCO_ESD,
   { id:'climate101', title:'Climate 101', desc:'Causes, impacts, and solutions for climate change.', lessons:[
     { title:'Intro to climate', content:'Climate is the average of weather over long periods. We study temperature, precipitation, and patterns.' },
     { title:'Greenhouse effect', content:'Gases like CO₂ trap heat, keeping Earth warm, but excess emissions intensify warming.' },
@@ -167,7 +299,7 @@ export default function Learn(){
             <div className="small">Module</div>
             <h2 className="mt-6">{current.title}</h2>
             <p className="small">{current.desc}</p>
-            <div className="small mt-6">Source: United Nations — SDG 13 (Climate Action)</div>
+            {current.source && <div className="small mt-6">Source: {current.source}</div>}
             <div className="mt-12">
               <div className="progress"><div className="progress-fill" style={{width: pct(current)+"%"}}/></div>
               <div className="small mt-6">{(progress[current.id]||[]).length}/{current.lessons.length} lessons completed</div>
