@@ -192,17 +192,112 @@ const UNESCO_ESD = (()=>{
   };
 })();
 
+// Climate 101, expanded with NASA Climate, NOAA Climate.gov, and IPCC AR6 SYR
+const CLIMATE101 = (()=>{
+  const nasa_overview = "NASA explains that Earth’s climate is changing and that human activities are the main driver, supported by satellite observations and long-term data showing warming and patterns of change.";
+  const nasa_evidence = [
+    "There is unequivocal evidence that Earth is warming at an unprecedented rate.",
+    "Human activity is the principal cause of this warming.",
+    "Earth-orbiting satellites and new technologies provide long-term, multi-faceted observations of the planet.",
+    "Data collected over many years reveal signs and patterns of a changing climate."
+  ];
+  const nasa_causes = [
+    "Human activities are driving the global warming trend observed since the mid-20th century.",
+    "Burning fossil fuels (coal and oil) increases atmospheric carbon dioxide (CO2) concentrations, trapping heat in the atmosphere."
+  ];
+  const nasa_impacts = [
+    "Loss of sea ice and melting glaciers and ice sheets.",
+    "Rising sea levels that threaten coastal regions.",
+    "More intense heat waves and extreme weather events.",
+    "Altered weather patterns and increased variability in climate",
+    "Broader impacts on ecosystems and coastal communities as climate changes unfold."
+  ];
+  const nasa_solutions = [
+    "Mitigation: reduce greenhouse gas emissions and switch to cleaner energy sources.",
+    "Mitigation: increase energy efficiency across buildings, transport, and industry.",
+    "Mitigation: deploy renewable energy technologies at scale.",
+    "Adaptation: strengthen resilience of communities and infrastructure to climate impacts.",
+    "Policy and planning: implement sustainable policies and climate-informed decisions.",
+    "Science and monitoring: continue observations and research to track changes.",
+    "Education and outreach: engage stakeholders in climate solutions."
+  ];
+
+  const noaa_indicators = [
+    "2.780 trillion USD: Total cost of 396 U.S. weather and climate disasters ≥ $1B (1980–Aug 2024).",
+    "55 atmospheric gases measured for distributions and trends.",
+    "36 days: Cyclone Freddy’s duration in 2023, the longest-lived tropical cyclone on record.",
+    "19 La Niña events since 1950 influencing global patterns.",
+    "3+ million ocean temperature profiles from the Argo buoy fleet (as of 2024).",
+    "~100 billion metric tons of ice lost by Antarctica each year since 2003."
+  ];
+  const noaa_adaptation = [
+    "Engage communities and schools in localized climate action plans (floods, heat, hurricanes, wildfires).",
+    "Implement early warnings and evacuation planning with schools as partners.",
+    "Heat mitigation: cooling centers, shading, water access; schools as hubs during heat waves.",
+    "Resilient infrastructure: drainage, building standards, and nature-based solutions.",
+    "Integrate climate education and preparedness into curricula and clubs.",
+    "Foster local networks for response, recovery, and resource sharing."
+  ];
+  const noaa_resilience = [
+    "Inclusive emergency plans for vulnerable populations.",
+    "Green/blue infrastructure to reduce flood risk and urban heat.",
+    "Access to climate data and tools for planning in schools and municipalities.",
+    "Embed resilience into school facilities management and operations.",
+    "Diversify energy, water, and food systems to improve stability."
+  ];
+
+  const ipcc_warming = "Current global warming is approximately 1.1–1.2°C above pre-industrial levels, with continued warming if emissions are not reduced.";
+  const ipcc_key = [
+    "Warming is impacting every region and sector with more extremes and sea-level rise.",
+    "Delays in emission cuts lock in higher warming and larger risks.",
+    "Some damages are long-lasting or irreversible (ice sheets, some species).",
+    "Vulnerable regions bear disproportionate risks with limited adaptive capacity.",
+    "Mitigation and adaptation together reduce risks more effectively.",
+    "Transformations in energy, land use, transport, and cities are required.",
+    "Better data, governance, and finance enable effective responses.",
+    "Transitions must be equitable and just to protect development gains.",
+    "Global cooperation and access to technology/finance are essential."
+  ];
+  const ipcc_mitigation = [
+    "Pursue 1.5°C-consistent pathways with rapid near-term cuts.",
+    "Reach net-zero CO2 and cut non-CO2 gases by mid-century.",
+    "Phase out unabated coal; scale renewables and efficiency; decarbonize industry/transport.",
+    "Electrify end-use sectors while cleaning the power supply.",
+    "Scale nature-based sinks alongside sustainable land use.",
+    "Align markets via carbon pricing, regulation, and innovation support.",
+    "Front-load action by 2030; near-complete power/transport decarb by ~2050."
+  ];
+  const ipcc_adapt_limits = [
+    "Residual impacts will persist even with strong action.",
+    "Some regions face physical/economic limits to adaptation.",
+    "Chronic stresses (sea-level rise, heat) challenge health and livelihoods.",
+    "Flexibility is critical due to compound and shifting risks.",
+    "Equity/justice matter; otherwise the most vulnerable face the hardest limits."
+  ];
+
+  return {
+    id: 'climate101',
+    title: 'Climate 101',
+    desc: 'Causes, evidence, impacts, and solutions for climate change.',
+    source: 'NASA Climate; NOAA Climate.gov; IPCC AR6 Synthesis Report',
+    lessons: [
+      { title: 'Overview', content: bullets([nasa_overview, ipcc_warming]) },
+      { title: 'Greenhouse effect & causes', content: bullets(nasa_causes) },
+      { title: 'What the data shows', content: bullets([...nasa_evidence, ...noaa_indicators]) },
+      { title: 'Impacts on Earth systems', content: bullets(nasa_impacts) },
+      { title: 'Impacts on people & places', content: bullets(ipcc_key) },
+      { title: 'Mitigation pathways', content: bullets(ipcc_mitigation) },
+      { title: 'Adaptation & resilience', content: bullets([...noaa_adaptation, ...noaa_resilience, ...ipcc_adapt_limits]) },
+      { title: 'What students and schools can do', content: bullets(nasa_solutions) }
+    ]
+  };
+})();
+
 const MODULES = [
   SDG13,
   NEP2020,
   UNESCO_ESD,
-  { id:'climate101', title:'Climate 101', desc:'Causes, impacts, and solutions for climate change.', lessons:[
-    { title:'Intro to climate', content:'Climate is the average of weather over long periods. We study temperature, precipitation, and patterns.' },
-    { title:'Greenhouse effect', content:'Gases like CO₂ trap heat, keeping Earth warm, but excess emissions intensify warming.' },
-    { title:'Impacts & risks', content:'Sea level rise, extreme weather, biodiversity loss, and health risks affect communities.' },
-    { title:'Solutions & policy', content:'Mitigation (cut emissions) and adaptation (prepare) with policies like carbon pricing.' },
-    { title:'Quiz: Climate basics', content:'Test your knowledge with a short multiple‑choice quiz.' },
-  ]},
+  CLIMATE101,
   { id:'zerowaste', title:'Zero‑Waste Basics', desc:'Reduce, reuse, recycle—habits that stick.', lessons:[
     { title:'Waste audit', content:'Track what you throw away for a week to identify reduction opportunities.' },
     { title:'Reduce & reuse', content:'Avoid single‑use items, buy durable goods, and repair instead of replacing.' },
