@@ -88,3 +88,16 @@
 .progress{height:8px;border:1px solid var(--border);border-radius:999px;background:#0f120f;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,#12d06f,#18eb6a);width:0%}
 .item.grid-two input{margin-top:4px}
+
+/* Embedded article content (NASA) */
+.nasa-article .article-content{line-height:1.7}
+.nasa-article .article-content h2{margin:16px 0 10px}
+.nasa-article .article-content figure{margin:10px 0}
+.nasa-article .article-content img{max-width:100%;height:auto;border-radius:10px;display:block}
+.nasa-article .article-content figcaption{font-size:12px;color:var(--muted);margin-top:6px}
+.nasa-article .article-content .caption{font-size:12px;color:var(--muted)}
+.YTVideoWrapper{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;border:1px solid var(--border);background:#0f120f}
+.YTVideoWrapper iframe{position:absolute;inset:0;width:100%;height:100%}
+.video-illustration video{width:100%;height:auto;border:1px solid var(--border);border-radius:10px;background:#0f120f}
+.nasa-short-answer{border:1px solid var(--border);border-radius:12px;padding:12px;background:#0f120f}
+.image-with-caption.center{display:block;text-align:center}
